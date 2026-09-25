@@ -4,15 +4,7 @@
 	<HEAD>      
 		<TITLE>수강신청 사이트</TITLE>
 
-		<script language="javascript">
-			// 전달받은 메시지 출력
-			function showMessage( message )
-			{
-				if ( ( message != null ) && ( message != "" ) && ( message.substring( 0, 3 ) == " * " )  ) 
-				{
-					alert( message );
-				}
-			}     
+		<script language="javascript">  
 			// 지정한 url로 이동하는 함수 
 			function move( url )	
 	 		{
@@ -22,12 +14,12 @@
 		</script>
 	</HEAD>
 
-	<BODY onLoad="showMessage( '<%=request.getParameter( "message" )%>' );" >
 		<!-- 화면구성 -->
 		<BR> 
+		<h2>강좌 조회</h2>
 		<form name = "formm" method = "post">				
 			&nbsp; &nbsp; &nbsp; 
-			교과목명 : <INPUT TYPE="text" NAME="message" SIZE="60"> 
+			교과목명 : <INPUT TYPE="text" NAME="keyword" SIZE="60" VALUE="<%= request.getParameter("keyword") == null ? "" : request.getParameter("keyword") %>"> 
 		</form>  
 		 &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   
 		<INPUT TYPE = "button" value = "강좌 검색" onClick="javascript:move( './search.jsp' );">
@@ -36,8 +28,11 @@
 		<BR> <BR> &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 		<BR> <BR>  
 		
-		<!-- 강좌 목록 출력 -->
+		<!-- 전체 강좌 목록 출력 -->
 		<%@ include file="./selectSQL.jsp"%>
+
+		<!-- 내 강좌 목록 출력 -->
+		<%@ include file="./myCourse.jsp"%>
 	</BODY>
 </HTML>
  

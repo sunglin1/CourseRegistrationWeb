@@ -1,13 +1,26 @@
 <%@ page language="java" import="java.sql.*, javax.sql.DataSource" contentType="text/html;charset=utf8" pageEncoding="utf8"%>
 
 <%@ include file="./SQLconstants.jsp"%>
+<%@ include file="./log.jsp"%>
 
 <%
 	// 이전 페이지에서 전달 받은 메시지 확인
     request.setCharacterEncoding("UTF-8");
-    String message = request.getParameter("message");
-    if (message == null || message.equals("")) {
-        message = "";
+	// 검색어 가져오기
+    String keyword = request.getParameter("keyword");
+    if (keyword == null || keyword.equals("")) {
+        keyword = "";
+    }
+	
+	// 강좌 검색 로그
+    if (!keyword.equals("")) {
+
+        writeLog(
+            "'" + keyword + "' 교과목을 검색하였습니다.",
+            request,
+            session
+        );
+
     }
 
     try {
@@ -44,14 +57,15 @@
 
 		// PreparedStatement를 사용하여 SQL 쿼리 실행
 		PreparedStatement pstmt = con.prepareStatement(query);
-		//message 내용으로 검색할 수 있도록 설정
-		pstmt.setString(1, "%" + message + "%");
+		//keyword 내용으로 검색할 수 있도록 설정
+		pstmt.setString(1, "%" + keyword + "%");
 		// SQL 쿼리 실행
         ResultSet result = pstmt.executeQuery();
 
 %>
 
-//표 형태
+<h2>전체 강좌</h2>
+
 <table border="1" cellpadding="7" cellspacing="0">
 
     <tr>
@@ -68,6 +82,7 @@
         <th>개설학과</th>
         <th>비고</th>
         <th>강의계획서</th>
+        <th>수강신청</th>
     </tr>
 
 <%
@@ -93,6 +108,23 @@
                target="_blank">
                 보기
             </a>
+        </td>
+
+		<!-- 수강신청 버튼 -->
+        <td>
+
+            <form method="post"
+                  action="./insertSQL.jsp">
+
+                <input type="hidden"
+                       name="course_section_id"
+                       value="<%= result.getString("course_section_id") %>">
+
+                <input type="submit"
+                       value="수강신청">
+
+            </form>
+
         </td>
     </tr>
 
@@ -122,9 +154,3 @@
 <%
     }
 %>
-
-<%-- <%@ include file="./log.jsp"%>
-<%
-	// 로그 데이터 추출
-	writeLog( message + "와 관련된 책을 찾았습니다", request, session );
-%> --%>
