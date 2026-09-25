@@ -6,20 +6,29 @@
 <%
 	// 이전 페이지에서 전달 받은 메시지 확인
     request.setCharacterEncoding("UTF-8");
-	// 검색어 가져오기
-    String keyword = request.getParameter("keyword");
-    if (keyword == null || keyword.equals("")) {
-        keyword = "";
-    }
-	
-	// 강좌 검색 로그
-    if (!keyword.equals("")) {
 
-        writeLog(
-            "'" + keyword + "' 교과목을 검색하였습니다.",
-            request,
-            session
-        );
+	// 검색 조건 가져오기
+    String keyword = request.getParameter("keyword");
+    String completionType = request.getParameter("completion_type");
+    String campus = request.getParameter("campus");
+    String targetGrade = request.getParameter("target_grade");
+    String departmentId = request.getParameter("department_id");
+
+    // null 처리
+    if (keyword == null) keyword = "";
+    if (completionType == null) completionType = "";
+    if (campus == null) campus = "";
+    if (targetGrade == null) targetGrade = "";
+    if (departmentId == null) departmentId = "";
+	
+
+	// 검색 로그
+	//존재하는 검색 조건에 대해 로그 기록
+    if (!keyword.equals("") || !completionType.equals("") || !campus.equals("") || !targetGrade.equals("") || !departmentId.equals(""))
+    {
+        String logMessage = "강좌 검색 - " + "교과목명:[" + keyword + "] " + "이수구분:[" + completionType + "] " + "캠퍼스:[" + campus + "] " + "대상학년:[" + targetGrade + "] " + "개설학과:[" + departmentId + "]";
+
+        writeLog(logMessage, request, session);
 
     }
 
@@ -52,13 +61,48 @@
             "FROM course c " +
             "LEFT JOIN professor p ON c.professor_id = p.professor_id " +
             "LEFT JOIN department d ON c.department_id = d.department_id " +
-            "WHERE c.course_name LIKE ? " +
-			"ORDER BY c.course_section_id";
+            "WHERE c.course_name LIKE ? ";
+
+			// 검색 조건에 따라 쿼리 추가
+			if (!completionType.equals("")) {
+				query += "AND c.completion_type = ? ";
+			}
+
+			if (!campus.equals("")) {
+				query += "AND c.campus = ? ";
+			}
+
+			if (!targetGrade.equals("")) {
+				query += "AND c.target_grade = ? ";
+			}
+
+			if (!departmentId.equals("")) {
+				query += "AND c.department_id = ? ";
+			}
+
+        query += "ORDER BY c.course_section_id";
+
 
 		// PreparedStatement를 사용하여 SQL 쿼리 실행
 		PreparedStatement pstmt = con.prepareStatement(query);
-		//keyword 내용으로 검색할 수 있도록 설정
-		pstmt.setString(1, "%" + keyword + "%");
+		
+		//검색 설정
+		int parameterIndex = 1;
+
+		pstmt.setString(parameterIndex++, "%" + keyword + "%"); // 교과목명 검색
+
+		if (!completionType.equals("")) { // 이수구분
+			pstmt.setString(parameterIndex++, completionType);
+		}
+		if (!campus.equals("")) { // 캠퍼스
+			pstmt.setString(parameterIndex++, campus);
+		}
+		if (!targetGrade.equals("")) { // 대상학년
+			pstmt.setString(parameterIndex++, targetGrade);
+		} 
+		if (!departmentId.equals("")) { // 개설학과
+			pstmt.setString(parameterIndex++, departmentId);
+		}
 		// SQL 쿼리 실행
         ResultSet result = pstmt.executeQuery();
 
@@ -86,7 +130,10 @@
     </tr>
 
 <%
+        boolean hasResult = false;
+
         while (result.next()) {
+            hasResult = true;
 %>
 
     <tr>
@@ -130,6 +177,16 @@
 
 <%
         }
+		//검색 결과가 없는 경우
+		if (!hasResult) {
+%>
+
+    <tr>
+        <td colspan="14" align="center">검색 결과가 없습니다.</td>
+    </tr>
+
+<%
+        }
 %>
 
 </table>
@@ -144,13 +201,13 @@
 %>
 
     <p>SQL 오류 : <%= e.getMessage() %></p>
-
+	
 <%
     } catch (Exception e) {
 %>
 
     <p>오류 : <%= e.getMessage() %></p>
-
+	
 <%
     }
 %>
