@@ -1,42 +1,24 @@
-<%@ page language="java"
-    import="java.sql.*"
-    contentType="text/html;charset=utf8"
-    pageEncoding="utf8"%>
-
+<%@ page language="java" import="java.sql.*" contentType="text/html;charset=utf8" pageEncoding="utf8"%>
 <%@ include file="./SQLconstants.jsp"%>
 <%@ include file="./log.jsp"%>
 
 <%
-
     request.setCharacterEncoding("UTF-8");
-
 
     // 현재 로그인한 학생이라고 가정
     String student_id = "202311088";
 
-
     // 수강신청할 강좌 번호
-    String course_section_id =
-        request.getParameter("course_section_id");
-
-
+    String course_section_id = request.getParameter("course_section_id");
+    
     String resultMessage = "";
 
-
     try {
-
         // MySQL 드라이버 로드
         Class.forName(jdbc_driver);
 
-
         // MySQL 연결
-        Connection con =
-            DriverManager.getConnection(
-                mySQL_database,
-                mySQL_id,
-                mySQL_password
-            );
-
+        Connection con = DriverManager.getConnection(mySQL_database, mySQL_id, mySQL_password);
 
         // 이미 신청한 강좌인지 확인
         String checkQuery =
@@ -45,69 +27,37 @@
             "WHERE student_id = ? " +
             "AND course_section_id = ?";
 
+        PreparedStatement checkPstmt = con.prepareStatement(checkQuery);
 
-        PreparedStatement checkPstmt =
-            con.prepareStatement(checkQuery);
+        checkPstmt.setString(1, student_id);
+        checkPstmt.setString(2, course_section_id);
 
-
-        checkPstmt.setString(
-            1,
-            student_id
-        );
-
-
-        checkPstmt.setString(
-            2,
-            course_section_id
-        );
-
-
-        ResultSet checkResult =
-            checkPstmt.executeQuery();
-
+        // 실행 요청 및 결과 확인
+        ResultSet checkResult = checkPstmt.executeQuery();
 
         // 이미 신청되어 있는 경우
         if (checkResult.next()) {
-
-            resultMessage =
-                " * 이미 신청한 강좌입니다.";
-
+            resultMessage = " * 이미 신청한 강좌입니다.";
         }
 
         // 신청되어 있지 않은 경우
         else {
-
             String insertQuery =
                 "INSERT INTO enrollment " +
                 "(student_id, course_section_id, retake_type) " +
-                "VALUES (?, ?, '신규')";
+                "VALUES (?, ?, '신규')"; //재수강 여부 미구현
 
+            PreparedStatement insertPstmt = con.prepareStatement(insertQuery);
 
-            PreparedStatement insertPstmt =
-                con.prepareStatement(insertQuery);
-
-
-            insertPstmt.setString(
-                1,
-                student_id
-            );
-
-
-            insertPstmt.setString(
-                2,
-                course_section_id
-            );
-
+            // 문자열 데이터로 처리해 오류 방지
+            insertPstmt.setString(1, student_id);
+            insertPstmt.setString(2, course_section_id);
 
             insertPstmt.executeUpdate();
 
-
             insertPstmt.close();
 
-
-            resultMessage =
-                " * 수강신청이 완료되었습니다.";
-
+            resultMessage = " * 수강신청이 완료되었습니다.";
 
 			// 로그 기록
 			writeLog(
@@ -118,29 +68,16 @@
 			);
         }
 
-
         checkResult.close();
         checkPstmt.close();
         con.close();
 
-
     } catch (SQLException e) {
-
-        resultMessage =
-            " * 수강신청 오류 : " +
-            e.getMessage();
-
-
+        resultMessage = " * 수강신청 오류 : " + e.getMessage();
     } catch (Exception e) {
-
-        resultMessage =
-            " * 오류 : " +
-            e.getMessage();
-
+        resultMessage = " * 오류 : " + e.getMessage();
     }
-
 %>
-
 
 <!-- 처리 후 search.jsp로 이동 -->
 

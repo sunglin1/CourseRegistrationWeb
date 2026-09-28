@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.sql.*, javax.sql.DataSource" contentType="text/html;charset=utf8" pageEncoding="utf8"%>
-
 <%@ include file="./SQLconstants.jsp"%>
 <%@ include file="./log.jsp"%>
 
@@ -23,24 +22,18 @@
 	
 
 	// 검색 로그
-	//존재하는 검색 조건에 대해 로그 기록
+	// 존재하는 검색 조건에 대해 로그 기록
     if (!keyword.equals("") || !completionType.equals("") || !campus.equals("") || !targetGrade.equals("") || !departmentId.equals(""))
     {
         String logMessage = "강좌 검색 - " + "교과목명:[" + keyword + "] " + "이수구분:[" + completionType + "] " + "캠퍼스:[" + campus + "] " + "대상학년:[" + targetGrade + "] " + "개설학과:[" + departmentId + "]";
-
         writeLog(logMessage, request, session);
-
     }
 
     try {
         // MySQL 연결
         Class.forName(jdbc_driver);
 
-        Connection con = DriverManager.getConnection(
-            mySQL_database,
-            mySQL_id,
-            mySQL_password
-        );
+        Connection con = DriverManager.getConnection(mySQL_database, mySQL_id, mySQL_password);
 
         // 강좌 쿼리
         String query =
@@ -82,15 +75,13 @@
 
         query += "ORDER BY c.course_section_id";
 
-
-		// PreparedStatement를 사용하여 SQL 쿼리 실행
+		//SQL 쿼리
 		PreparedStatement pstmt = con.prepareStatement(query);
 		
-		//검색 설정
+		//검색 설정 시작
 		int parameterIndex = 1;
 
 		pstmt.setString(parameterIndex++, "%" + keyword + "%"); // 교과목명 검색
-
 		if (!completionType.equals("")) { // 이수구분
 			pstmt.setString(parameterIndex++, completionType);
 		}
@@ -105,7 +96,6 @@
 		}
 		// SQL 쿼리 실행
         ResultSet result = pstmt.executeQuery();
-
 %>
 
 <h2>전체 강좌</h2>
@@ -151,8 +141,7 @@
         <td><%= result.getString("note") %></td>
 
         <td>
-            <a href="<%= result.getString("syllabus_url") %>"
-               target="_blank">
+            <a href="<%= result.getString("syllabus_url") %>" target="_blank">
                 보기
             </a>
         </td>
@@ -160,18 +149,10 @@
 		<!-- 수강신청 버튼 -->
         <td>
 
-            <form method="post"
-                  action="./insertSQL.jsp">
-
-                <input type="hidden"
-                       name="course_section_id"
-                       value="<%= result.getString("course_section_id") %>">
-
-                <input type="submit"
-                       value="수강신청">
-
+            <form method="post" action="./insertSQL.jsp">
+                <input type="hidden" name="course_section_id" value="<%= result.getString("course_section_id") %>">
+                <input type="submit" value="수강신청">
             </form>
-
         </td>
     </tr>
 
