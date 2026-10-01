@@ -1,6 +1,6 @@
 <!-- 로그인 정보 가져오기 -->
 <?php
-require_once __DIR__ . '/php/db.php'; //php 파일 불러오기
+require_once __DIR__ . '/course-registration/php/db.php'; //php 파일 불러오기
 
 require_login(false); //로그인 여부 확인
 

@@ -40,7 +40,7 @@ async function login() {
             password: password
         });
 
-        const response = await fetch("php/login.php", {
+        const response = await fetch("course-registration/php/login.php", {
             method: "POST",
             body: body,
             credentials: "same-origin"

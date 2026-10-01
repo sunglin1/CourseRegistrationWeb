@@ -61,7 +61,7 @@ function updateSelectOptions() {
 // ==========================================
 
 async function api(path, options = {}) {
-    const response = await fetch("php/" + path, {
+    const response = await fetch("course-registration/php/" + path, {
         credentials: "same-origin",
         ...options
     });
