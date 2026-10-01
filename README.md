@@ -1,7 +1,7 @@
 # CourseRegistrationWeb
 2026-02 웹서버개발 팀플
 
-## 실행 방법
+## JSP 실행 방법
 
 ### 서버 접속
 
