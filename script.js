@@ -135,7 +135,7 @@ function displayCourses(courseList) {
             <td>
                 <button
                     class="apply-button"
-                    onclick="enrollCourse(${course.id})">
+                    onclick="enrollCourse('${course.id}')">
                     신청
                 </button>
             </td>
@@ -280,7 +280,7 @@ function displayEnrollment() {
             <td>
                 <button
                     class="cancel-button"
-                    onclick="cancelCourse(${course.id})">
+                    onclick="cancelCourse('${course.id}')">
                     취소
                 </button>
             </td>
