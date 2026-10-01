@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>상명대학교 수강신청 로그인</title>
+
+    <link rel="stylesheet" href="login.css">
+</head>
+
+
+<body>
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <!-- 학교 / 사이트 이름 -->
+            <div class="login-header">
+
+                <div class="logo-circle">
+                    SM
+                </div>
+
+                <p class="school-name">
+                    SANGMYUNG UNIVERSITY
+                </p>
+
+                <h1>
+                    상명대학교 수강신청
+                </h1>
+
+                <p class="welcome-text">
+                    수강신청 시스템에 로그인해 주세요.
+                </p>
+
+            </div>
+
+
+            <!-- 로그인 입력 영역 -->
+            <div class="login-form">
+
+                <div class="input-group">
+
+                    <label for="studentId">
+                        학번
+                    </label>
+
+                    <div class="input-box">
+
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="학번을 입력하세요"
+                            autocomplete="username">
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="password">
+                        비밀번호
+                    </label>
+
+                    <div class="input-box">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="비밀번호를 입력하세요"
+                            autocomplete="current-password">
+
+
+                        
+
+                    </div>
+
+                </div>
+
+
+                <!-- 로그인 실패 메시지 -->
+                <p id="loginMessage" class="login-message"></p>
+
+
+                <!-- 로그인 버튼 -->
+                <button
+                    type="button"
+                    id="loginButton"
+                    class="login-button">
+
+                    로그인
+
+                </button>
+
+
+                <!-- 하단 링크 -->
+                <div class="login-options">
+
+                    <button
+                        type="button"
+                        class="text-button">
+                        비밀번호 찾기
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer class="login-footer">
+
+            © SANGMYUNG UNIVERSITY COURSE REGISTRATION
+
+        </footer>
+
+    </main>
+
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

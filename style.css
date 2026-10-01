@@ -1,0 +1,914 @@
+/* =========================
+   기본 설정
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+
+body {
+    font-family:
+        "Pretendard",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+
+    background-color: #f3f8ff;
+
+    color: #1e293b;
+}
+
+
+
+/* =========================
+   전체 페이지
+========================= */
+
+.page-container {
+    width: 96%;
+    max-width: 1600px;
+
+    margin: 22px auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+
+/* =========================
+   카드 공통 디자인
+========================= */
+
+.card,
+.user-card {
+    background-color: white;
+
+    border: 1px solid #e3edfb;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 30px rgba(37, 99, 235, 0.07);
+}
+
+
+
+/* =========================
+   사용자 정보
+========================= */
+
+.user-card {
+    min-height: 105px;
+
+    padding: 20px 28px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 28px;
+}
+
+
+.profile-area {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    flex-shrink: 0;
+}
+
+
+.profile-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background-color: #eaf4ff;
+
+    font-size: 30px;
+}
+
+
+.small-title {
+    margin: 0 0 3px;
+
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+h1 {
+    margin: 0;
+
+    font-size: 24px;
+
+    color: #172554;
+}
+
+
+.user-info {
+    margin-left: auto;
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+.user-info div {
+    min-width: 115px;
+
+    padding: 10px 15px;
+
+    border-radius: 13px;
+
+    background-color: #f7faff;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.user-info span {
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+.user-info strong {
+    color: #1e3a8a;
+
+    font-size: 14px;
+}
+
+
+
+/* =========================
+   로그아웃 버튼
+========================= */
+
+.logout-button {
+    flex-shrink: 0;
+
+    padding: 10px 17px;
+
+    border: 1px solid #d6e4f5;
+
+    border-radius: 12px;
+
+    background-color: white;
+
+    color: #475569;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.logout-button:hover {
+    background-color: #eaf4ff;
+
+    border-color: #93c5fd;
+
+    color: #2563eb;
+}
+
+
+
+/* =========================
+   메인 레이아웃
+========================= */
+
+.workspace-grid {
+    display: grid;
+
+    grid-template-columns:
+        340px minmax(0, 1fr);
+
+    gap: 20px;
+
+    /*
+       화면 아래로 너무 길어지지 않게
+       작업영역 높이를 화면 크기에 맞춤
+    */
+    height: calc(100vh - 169px);
+
+    min-height: 620px;
+}
+
+
+
+/* =========================
+   왼쪽 강좌 조회
+========================= */
+
+.search-section {
+    height: 100%;
+
+    padding: 24px;
+
+    overflow-y: auto;
+}
+
+
+
+/* =========================
+   오른쪽 영역
+========================= */
+
+.right-column {
+    min-width: 0;
+    min-height: 0;
+
+    display: grid;
+
+    /*
+       위 검색결과를 조금 더 크게,
+       아래 신청내역을 조금 작게
+    */
+    grid-template-rows:
+        minmax(0, 1.15fr)
+        minmax(0, 0.85fr);
+
+    gap: 20px;
+}
+
+
+
+/* =========================
+   검색 결과 / 수강내역 카드
+========================= */
+
+.result-section,
+.enrollment-section {
+    min-width: 0;
+    min-height: 0;
+
+    padding: 22px 26px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* =========================
+   제목
+========================= */
+
+.section-header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.section-header h2 {
+    margin: 3px 0 0;
+
+    color: #172554;
+
+    font-size: 21px;
+}
+
+
+.section-number {
+    margin: 0;
+
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+
+/* =========================
+   전공 / 교양 탭
+========================= */
+
+.course-tabs {
+    display: flex;
+
+    padding: 5px;
+
+    margin-bottom: 22px;
+
+    border-radius: 14px;
+
+    background-color: #eef6ff;
+}
+
+
+.tab-button {
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background-color: transparent;
+
+    color: #64748b;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.tab-button.active {
+    background-color: #2563eb;
+
+    color: white;
+
+    box-shadow:
+        0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+
+
+/* =========================
+   검색 폼
+========================= */
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+
+.search-form label {
+    margin-top: 5px;
+
+    color: #334155;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.search-form input,
+.search-form select {
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 15px;
+
+    border: 1px solid #d6e4f5;
+
+    border-radius: 12px;
+
+    background-color: #fbfdff;
+
+    color: #1e293b;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+.search-form select {
+    cursor: pointer;
+}
+
+
+.search-form input:focus,
+.search-form select:focus {
+    border-color: #3b82f6;
+
+    background-color: white;
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+
+
+/* =========================
+   조회 버튼
+========================= */
+
+.view-button {
+    width: 100%;
+
+    margin-top: 10px;
+}
+
+
+
+/* =========================
+   상세 검색 구분선
+========================= */
+
+.search-divider {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 25px 0 10px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+.search-divider::before,
+.search-divider::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background-color: #dce6f3;
+}
+
+
+
+/* =========================
+   버튼
+========================= */
+
+.button-group {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+
+.primary-button,
+.secondary-button {
+    min-height: 43px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 10px 18px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.primary-button {
+    flex: 2;
+
+    background-color: #2563eb;
+
+    color: white;
+}
+
+
+.primary-button:hover {
+    background-color: #1d4ed8;
+}
+
+
+.secondary-button {
+    flex: 1;
+
+    background-color: #eaf4ff;
+
+    color: #2563eb;
+}
+
+
+.secondary-button:hover {
+    background-color: #dbeeff;
+}
+
+
+
+/* =========================
+   검색 결과 개수
+========================= */
+
+.result-count {
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background-color: #eaf4ff;
+
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+
+/* =========================
+   표 영역
+========================= */
+
+.table-wrapper {
+    flex: 1;
+
+    min-height: 0;
+
+    overflow: auto;
+
+    border-radius: 10px;
+}
+
+
+table {
+    width: 100%;
+
+    min-width: 760px;
+
+    border-collapse: collapse;
+
+    font-size: 13px;
+}
+
+
+thead {
+    position: sticky;
+    top: 0;
+
+    z-index: 2;
+
+    background-color: #eef6ff;
+}
+
+
+th {
+    color: #475569;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+th,
+td {
+    padding: 12px 10px;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #e8eef5;
+}
+
+
+tbody tr {
+    transition: 0.15s;
+}
+
+
+tbody tr:hover {
+    background-color: #f8fbff;
+}
+
+
+
+/* =========================
+   신청 버튼
+========================= */
+
+.apply-button {
+    padding: 7px 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background-color: #2563eb;
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.apply-button:hover {
+    background-color: #1d4ed8;
+}
+
+
+
+/* =========================
+   취소 버튼
+========================= */
+
+.cancel-button {
+    padding: 7px 13px;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 9px;
+
+    background-color: #fff5f5;
+
+    color: #dc2626;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.cancel-button:hover {
+    background-color: #fee2e2;
+}
+
+
+
+/* =========================
+   총 신청학점
+========================= */
+
+.credit-box {
+    padding: 8px 14px;
+
+    border-radius: 12px;
+
+    background-color: #eff6ff;
+
+    color: #475569;
+
+    font-size: 12px;
+}
+
+
+.credit-box strong {
+    margin-left: 4px;
+
+    color: #2563eb;
+
+    font-size: 16px;
+}
+
+
+
+/* =========================
+   신청과목이 없을 때
+========================= */
+
+.enrollment-table-wrapper {
+    position: relative;
+}
+
+
+.empty-message {
+    padding: 27px;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+
+/* =========================
+   검색 전 안내 화면
+========================= */
+
+.empty-result-row td {
+    border-bottom: none;
+}
+
+
+.empty-result {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #94a3b8;
+}
+
+
+.empty-result strong {
+    margin-top: 10px;
+
+    color: #475569;
+
+    font-size: 17px;
+}
+
+
+.empty-result p {
+    margin: 7px 0 0;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+.empty-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 17px;
+
+    background-color: #eaf4ff;
+
+    color: #2563eb;
+
+    font-size: 27px;
+}
+
+
+
+/* =========================
+   알림 메시지
+========================= */
+
+.toast {
+    position: fixed;
+
+    right: 28px;
+    bottom: 28px;
+
+    z-index: 1000;
+
+    padding: 14px 20px;
+
+    border-radius: 13px;
+
+    background-color: #1e3a8a;
+
+    color: white;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.18);
+
+    opacity: 0;
+
+    transform: translateY(20px);
+
+    pointer-events: none;
+
+    transition: 0.3s;
+
+    font-size: 13px;
+}
+
+
+.toast.show {
+    opacity: 1;
+
+    transform: translateY(0);
+}
+
+
+
+/* =========================
+   스크롤바 약간 정리
+========================= */
+
+.table-wrapper::-webkit-scrollbar,
+.search-section::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.search-section::-webkit-scrollbar-thumb {
+    background-color: #b9c6d8;
+
+    border-radius: 10px;
+}
+
+
+.table-wrapper::-webkit-scrollbar-track,
+.search-section::-webkit-scrollbar-track {
+    background-color: #f1f5f9;
+
+    border-radius: 10px;
+}
+
+
+
+/* =========================
+   작은 화면 대응
+========================= */
+
+@media (max-width: 900px) {
+
+    .page-container {
+        width: 94%;
+    }
+
+
+    .user-card {
+        flex-wrap: wrap;
+    }
+
+
+    .user-info {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+
+    .workspace-grid {
+        height: auto;
+
+        min-height: 0;
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .search-section {
+        height: auto;
+
+        overflow: visible;
+    }
+
+
+    .right-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .result-section,
+    .enrollment-section {
+        min-height: 350px;
+    }
+
+}
