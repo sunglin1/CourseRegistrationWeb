@@ -31,11 +31,14 @@ try {
         $generalAreas = $conn->query("
             SELECT DISTINCT completion_type AS value
             FROM course
-            WHERE course_type <> '전공'
-              AND completion_type IS NOT NULL
-              AND completion_type <> ''
+            WHERE course_type IN (
+                '교직', 'md', '교선', '교필', '일선'
+            )
+            AND completion_type IS NOT NULL
+            AND TRIM(completion_type) <> ''
             ORDER BY completion_type
         ")->fetch_all(MYSQLI_ASSOC);
+
 
         // 전공 학과
         $departments = $conn->query("

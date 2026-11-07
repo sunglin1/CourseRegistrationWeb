@@ -74,19 +74,24 @@ function updateSelectOptions() {
             courseArea,
             filterOptions.departments
         );
-    } else {
-        fillOptions(
-            completionType,
-            filterOptions.types.filter(
-                type => type !== "전공"
-            )
-        );
+    
+        } else {
+            // 교양 유형
+            fillOptions(
+                completionType,
+                filterOptions.types.filter(
+                    type => [
+                        "교직", "MD", "교선", "교필", "일선"
+                    ].includes(type)
+                )
+            );
 
-        fillOptions(
-            courseArea,
-            filterOptions.generalAreas
-        );
-    }
+            // 교양 영역
+            fillOptions(
+                courseArea,
+                filterOptions.generalAreas
+            );
+        }
 }
 
 // DB에서 옵션 불러오기
