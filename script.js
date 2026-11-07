@@ -233,6 +233,15 @@ async function fetchCourses(params, page = 1) {
         // 페이지 번호 표시
         renderPagination();
 
+        // 검색 결과 상자 내부 스크롤을 맨 위로 이동
+        const scrollContainer = document.querySelector(
+            ".result-section .course-table-scroll"
+        );
+
+        if (scrollContainer) {
+            scrollContainer.scrollTop = 0;
+        }
+
     } catch (error) {
         if (requestId === latestSearchRequest) {
             showToast(error.message);
