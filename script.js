@@ -2,6 +2,17 @@ const maxCredit = 18;
 let selectedType = "전공";  // 처음에는 전공강좌가 선택되어 있음
 let enrolledCourses = [];   // 학생이 신청한 과목을 저장하는 배열
 
+const pageSize = 20;
+let currentPage = 1;
+let totalPages = 1;
+
+// 마지막 검색 조건 저장
+let currentSearchParams = {};
+
+// 검색 요청 순서 관리
+let latestSearchRequest = 0;
+
+
 // ==========================================
 // HTML 요소 가져오기
 // ==========================================
@@ -17,42 +28,77 @@ const completionType = document.getElementById("completionType");
 const courseArea = document.getElementById("courseArea");
 const tabButtons = document.querySelectorAll(".tab-button");
 
+
+// ==========================================
+// 검색 드롭다운 옵션
+// ==========================================
+
+let filterOptions = {
+    types: [],
+    majorCompletions: [],
+    generalAreas: [],
+    departments: []
+};
+
+function fillOptions(select, values) {
+    select.replaceChildren();
+    select.add(new Option("전체", ""));
+
+    values.forEach(value => {
+        select.add(new Option(value, value));
+    });
+}
+
+
 // ==========================================
 // 전공 / 교양에 따라 드롭다운 목록 변경
 // ==========================================
 
 function updateSelectOptions() {
+    const areaLabel = document.querySelector(
+        'label[for="courseArea"]'
+    );
 
-    // 기존 목록 비우기
-    completionType.innerHTML = "";
-    courseArea.innerHTML = "";
-
-    // 전공/교양 강좌 선택 드롭다운
-    if (selectedType === "전공") {
-        completionType.innerHTML = `
-            <option value="">전체</option>
-            <option value="전필">전필</option>
-            <option value="전선">전선</option>
-        `;
-        courseArea.innerHTML = `
-            <option value="">전체</option>
-            <option value="게임전공">게임전공</option>
-            <option value="컴퓨터과학전공">컴퓨터과학전공</option>
-        `;
+    if (areaLabel) {
+        areaLabel.textContent =
+            selectedType === "전공" ? "학과" : "영역";
     }
 
-    else { //교양
-        completionType.innerHTML = `
-            <option value="">전체</option>
-            <option value="교필">교필</option>
-            <option value="교선">교선</option>
-        `;
-        courseArea.innerHTML = `
-            <option value="">전체</option>
-            <option value="기초교양">기초교양</option>
-            <option value="인문사회">인문사회</option>
-            <option value="문화예술">문화예술</option>
-        `;
+    if (selectedType === "전공") {
+        fillOptions(
+            completionType,
+            filterOptions.majorCompletions
+        );
+
+        fillOptions(
+            courseArea,
+            filterOptions.departments
+        );
+    } else {
+        fillOptions(
+            completionType,
+            filterOptions.types.filter(
+                type => type !== "전공"
+            )
+        );
+
+        fillOptions(
+            courseArea,
+            filterOptions.generalAreas
+        );
+    }
+}
+
+// DB에서 옵션 불러오기
+async function loadFilterOptions() {
+    try {
+        filterOptions = await api(
+            "selectSQL.php?action=options"
+        );
+
+        updateSelectOptions();
+    } catch (error) {
+        showToast(error.message);
     }
 }
 
@@ -105,9 +151,6 @@ function displayCourses(courseList) {
     // resultTable.innerHTML = "";
     resultTable.replaceChildren();
 
-    // 검색된 강좌 개수 표시
-    resultCount.textContent = courseList.length + "개 강좌";
-
     // 결과가 하나도 없는 경우
     if (courseList.length === 0) {
         const row = document.createElement("tr");
@@ -148,16 +191,170 @@ function displayCourses(courseList) {
 // PHP에서 강좌 목록 가져오기
 // ==========================================
 
-async function fetchCourses(params) {
-    try {
-        const query = new URLSearchParams(params);
-        const data = await api("selectSQL.php?" + query);
 
-        displayCourses(data.courses); // 화면에 출력
+async function fetchCourses(params, page = 1) {
+    // 현재 검색 조건 저장
+    currentSearchParams = { ...params };
+
+    // 요청 순서 기록
+    const requestId = ++latestSearchRequest;
+
+    try {
+        const query = new URLSearchParams({
+            ...params,
+            page: page
+        });
+
+        const data = await api(
+            "selectSQL.php?" + query.toString()
+        );
+
+        // 이전 검색 응답이 늦게 도착하면 무시
+        if (requestId !== latestSearchRequest) {
+            return;
+        }
+
+        // 현재 페이지 정보 갱신
+        currentPage = data.page;
+        totalPages = data.totalPages;
+
+        // 강좌 표시
+        displayCourses(data.courses);
+
+        // 전체 검색 결과 개수 표시
+        resultCount.textContent =
+            `총 ${data.total}개 강좌`;
+
+        // 페이지 번호 표시
+        renderPagination();
+
     } catch (error) {
-        showToast(error.message);
+        if (requestId === latestSearchRequest) {
+            showToast(error.message);
+        }
     }
 }
+
+
+// ==========================================
+// 페이지 번호 버튼 생성
+// ==========================================
+
+function renderPagination() {
+    let pagination = document.getElementById(
+        "coursePagination"
+    );
+
+    // 페이지 영역이 없다면 자동 생성
+    if (!pagination) {
+        pagination = document.createElement("div");
+        pagination.id = "coursePagination";
+
+        // 강좌 테이블 아래에 배치
+        const table = resultTable.closest("table");
+        table.insertAdjacentElement(
+            "afterend",
+            pagination
+        );
+    }
+
+    // 기본 스타일
+    Object.assign(pagination.style, {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "6px",
+        marginTop: "20px",
+        marginBottom: "20px",
+        flexWrap: "wrap"
+    });
+
+    pagination.replaceChildren();
+
+    // 결과가 없거나 1페이지면 버튼 숨기기
+    if (totalPages <= 1) {
+        return;
+    }
+
+    // 이전 버튼
+    addPageButton(
+        pagination,
+        "이전",
+        currentPage - 1,
+        currentPage === 1
+    );
+
+    // 한 번에 최대 5개의 페이지 번호 표시
+    const startPage =
+        Math.floor((currentPage - 1) / 5) * 5 + 1;
+
+    const endPage = Math.min(
+        startPage + 4,
+        totalPages
+    );
+
+    for (let i = startPage; i <= endPage; i++) {
+        addPageButton(
+            pagination,
+            String(i),
+            i,
+            false,
+            i === currentPage
+        );
+    }
+
+    // 다음 버튼
+    addPageButton(
+        pagination,
+        "다음",
+        currentPage + 1,
+        currentPage === totalPages
+    );
+}
+
+// ==========================================
+// 개별 페이지 버튼 생성
+// ==========================================
+
+function addPageButton(
+    container,
+    label,
+    page,
+    disabled = false,
+    active = false
+) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = label;
+    button.disabled = disabled;
+
+    Object.assign(button.style, {
+        padding: "7px 12px",
+        border: "1px solid #d1d5db",
+        borderRadius: "6px",
+        backgroundColor: active ? "#2563eb" : "#ffffff",
+        color: active ? "#ffffff" : "#374151",
+        cursor: disabled ? "default" : "pointer",
+        fontWeight: active ? "bold" : "normal",
+        opacity: disabled ? "0.4" : "1"
+    });
+
+    if (active) {
+        button.setAttribute("aria-current", "page");
+    }
+
+    button.addEventListener("click", () => {
+        if (disabled || active) {
+            return;
+        }
+
+        fetchCourses(currentSearchParams, page);
+    });
+
+    container.appendChild(button);
+}
+
 
 // ==========================================
 // 기본 강좌 조회
@@ -166,12 +363,21 @@ async function fetchCourses(params) {
 
 function viewCourses() {
     return fetchCourses({
-        type: selectedType, // 전공/교양
-        completion: completionType.value, // 이수구분
-        department: courseArea.value // 학과
+        group: selectedType,
+
+        type: selectedType === "전공"
+            ? "전공"
+            : completionType.value,
+
+        completion: selectedType === "전공"
+            ? completionType.value
+            : courseArea.value,
+
+        department: selectedType === "전공"
+            ? courseArea.value
+            : ""
     });
 }
-
 // ==========================================
 // 상세 검색
 // ==========================================
@@ -342,7 +548,7 @@ document.getElementById("searchButton").addEventListener(
 );
 
 // ==========================================
-// 15. 초기화 버튼
+// 초기화 버튼
 // ==========================================
 
 document.getElementById("resetButton").addEventListener("click", function () {
@@ -376,6 +582,24 @@ professorInput.addEventListener("keydown", function (event) {
 // ==========================================
 
 function clearSearchResults() {
+    
+    // 이전 검색 요청 무효화
+    latestSearchRequest++;
+
+    // 페이지 정보 초기화
+    currentPage = 1;
+    totalPages = 1;
+    currentSearchParams = {};
+
+    // 기존 페이지 번호 삭제
+    const pagination = document.getElementById(
+        "coursePagination"
+    );
+
+    if (pagination) {
+        pagination.replaceChildren();
+    }
+
     resultCount.textContent = "0개 강좌";
 
     resultTable.innerHTML = `
@@ -441,8 +665,7 @@ document.getElementById("logoutButton").addEventListener("click", async function
 // ==========================================
 
 
-// 전공용 이수구분 / 영역 목록 만들기
-updateSelectOptions();
+loadFilterOptions();
 
 // 처음에는 검색 결과를 바로 보여주지 않고
 // 조회 버튼을 누르라고 표시
