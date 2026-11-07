@@ -255,24 +255,15 @@ function renderPagination() {
         pagination = document.createElement("div");
         pagination.id = "coursePagination";
 
-        // 강좌 테이블 아래에 배치
-        const table = resultTable.closest("table");
-        table.insertAdjacentElement(
+        const scrollContainer = resultTable.closest(
+            ".course-table-scroll"
+        );
+
+        scrollContainer.insertAdjacentElement(
             "afterend",
             pagination
         );
     }
-
-    // 기본 스타일
-    Object.assign(pagination.style, {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "6px",
-        marginTop: "20px",
-        marginBottom: "20px",
-        flexWrap: "wrap"
-    });
 
     pagination.replaceChildren();
 
@@ -383,6 +374,7 @@ function viewCourses() {
             : ""
     });
 }
+
 // ==========================================
 // 상세 검색
 // ==========================================

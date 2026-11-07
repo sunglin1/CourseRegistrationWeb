@@ -912,3 +912,31 @@ tbody tr:hover {
     }
 
 }
+
+/* =========================
+   페이지 넘기기 UI
+========================= */
+
+
+/* 강좌 목록 스크롤 영역 */
+.course-table-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* 페이지 번호는 스크롤 영역 밖에 고정 */
+#coursePagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+
+    padding: 12px 0;
+    margin: 0;
+
+    background-color: #fff;
+    border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}

@@ -283,14 +283,12 @@ function h($v) {
                         </span>
 
                     </div>
-
-
-                    <div class="table-wrapper">
+                    
+                    <!-- 강좌 목록 스크롤 영역 -->
+                    <div class="table-wrapper course-table-scroll">
 
                         <table>
-
                             <thead>
-
                                 <tr>
                                     <th>과목명</th>
                                     <th>구분</th>
@@ -300,19 +298,18 @@ function h($v) {
                                     <th>강의실</th>
                                     <th>신청</th>
                                 </tr>
-
                             </thead>
 
-
                             <tbody id="resultTable">
-
                                 <!-- JavaScript가 표시 -->
-
                             </tbody>
-
                         </table>
 
                     </div>
+
+                    <!-- 페이지 번호 영역: 스크롤 바깥에 배치 -->
+                    <div id="coursePagination"></div>
+
 
                 </section>
 
